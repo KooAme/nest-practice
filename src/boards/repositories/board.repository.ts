@@ -1,0 +1,96 @@
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { DataSource, Repository } from 'typeorm';
+import { Board } from '../entities/board.entity';
+import { CustomRepository } from 'src/common/custom-repository.decorator';
+import { CreateBoardDto } from '../dtos/create-board.dto';
+import { BoardStatus } from '../boards-status.enum';
+import { User } from 'src/user/entities/user.entity';
+
+@Injectable()
+@CustomRepository(Board)
+export class BoardRepository extends Repository<Board> {
+  constructor(dataSource: DataSource) {
+    super(Board, dataSource.createEntityManager());
+  }
+
+  async createBoard(
+    createBoardDto: CreateBoardDto,
+    user: User,
+  ): Promise<Board> {
+    try {
+      const { title, description } = createBoardDto;
+
+      const board = this.create({
+        title,
+        description,
+        status: BoardStatus.PUBLIC,
+        user,
+      });
+
+      await this.save(board);
+      return board;
+    } catch (error) {
+      throw new BadRequestException('글을 생성할 수 없습니다.');
+    }
+  }
+
+  async deleteBoard(id: number, user: User): Promise<any> {
+    try {
+      const board = await this.getBoardById(id);
+      console.log('보드 아이디는', id);
+      console.log('보드유저아이디 ?', board.user.id);
+      console.log('유저는 ', user);
+
+      if (board.user.id === user.id) {
+        return await this.delete(id);
+      }
+      console.log('삭제되었습니다.');
+
+      // return board;
+    } catch (error) {
+      throw new BadRequestException('나의 게시글이 아닙니다.');
+    }
+  }
+
+  async updateBoard(
+    id: number,
+    title: string,
+    description: string,
+  ): Promise<Board> {
+    try {
+      const board = await this.update({ id }, { title, description });
+      if (!board) {
+        throw new BadRequestException('게시글 수정에 실패하였습니다.');
+      }
+      return;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
+  //   try {
+  //     const board = await this.getBoardById(id);
+
+  //     board.status = status;
+  //     await this.save(board);
+
+  //     return board;
+  //   } catch (error) {
+  //     throw new BadRequestException('게시글을 업데이트 하지 못했습니다.');
+  //   }
+  // }
+
+  async getBoardById(id: number): Promise<Board> {
+    try {
+      const found = await this.findOneBy({ id: id });
+      return found;
+    } catch (error) {
+      throw new BadRequestException('글을 찾을 수 없습니다.');
+    }
+  }
+}
