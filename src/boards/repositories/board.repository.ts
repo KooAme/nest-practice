@@ -41,18 +41,14 @@ export class BoardRepository extends Repository<Board> {
   async deleteBoard(id: number, user: User): Promise<any> {
     try {
       const board = await this.getBoardById(id);
-      console.log('보드 아이디는', id);
-      console.log('보드유저아이디 ?', board.user.id);
-      console.log('유저는 ', user);
 
-      if (board.user.id === user.id) {
+      if (board.user.email === user.email) {
         return await this.delete(id);
+      } else {
+        console.log('나의 게시글이 아닙니다.');
       }
-      console.log('삭제되었습니다.');
-
-      // return board;
     } catch (error) {
-      throw new BadRequestException('나의 게시글이 아닙니다.');
+      throw new BadRequestException('삭제가 되지 않았습니다.');
     }
   }
 
@@ -87,7 +83,7 @@ export class BoardRepository extends Repository<Board> {
 
   async getBoardById(id: number): Promise<Board> {
     try {
-      const found = await this.findOneBy({ id: id });
+      const found = await this.findOne({ relations: ['user'], where: { id } });
       return found;
     } catch (error) {
       throw new BadRequestException('글을 찾을 수 없습니다.');
