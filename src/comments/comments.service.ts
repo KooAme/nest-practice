@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateCommentDto } from './dtos/create-comment.dto';
 import { UpdateCommentDto } from './dtos/update-comment';
 import { User } from 'src/user/entities/user.entity';
+import { ReadCommentDto } from './dtos/read-comment.dto';
 
 @Injectable()
 export class CommentsService {
@@ -23,7 +24,7 @@ export class CommentsService {
         boardId,
       });
 
-      console.log('콘텐트', comment);
+      // console.log('콘텐트', comment);
       return comment;
     } catch (error) {
       console.log(error);
@@ -63,26 +64,17 @@ export class CommentsService {
     }
   }
 
-  // async findAllComment(boardId: number) {
-  //   try {
-  //     const comments = await this.commentRepository
-  //       .createQueryBuilder('comment')
-  //       .leftJoinAndSelect('comment.user', 'user')
-  //       .select(['comment', 'user.email'])
-  //       .where('boardId = :boardId', { boardId })
-  //       .getMany();
+  async getCommentByBoardId(boardId: number): Promise<any[]> {
+    try {
+      const comment = await this.commentRepository.find({
+        where: { boardId },
 
-  //     return comments;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-  // async findOneComment(id: number) {
-  //   try {
-  //     return await this, this.commentRepository.findOneByOrFail({ id });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+        order: { createdAt: 'DESC' },
+      });
+      return comment;
+    } catch (error) {
+      console.log('댓글을 읽어올 수 없습니다.');
+      console.error(error);
+    }
+  }
 }

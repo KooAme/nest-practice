@@ -13,6 +13,7 @@ import { GetUser } from 'src/auth/decorator/get-user.decorator';
 import { User } from 'src/user/entities/user.entity';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dtos/create-comment.dto';
+import { ReadCommentDto } from './dtos/read-comment.dto';
 import { UpdateCommentDto } from './dtos/update-comment';
 
 @Controller('comments')
@@ -37,5 +38,10 @@ export class CommentsController {
   @Delete('/:id')
   deleteComment(@Param('id') id: number, @GetUser() user: User) {
     return this.commentsService.deleteComment(id, user);
+  }
+
+  @Get('/:id')
+  getCommentByBoardId(@Param('id') id: number) {
+    return this.commentsService.getCommentByBoardId(id);
   }
 }
