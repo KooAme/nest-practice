@@ -24,11 +24,29 @@ export class BoardsService {
     return this.boardRepository.updateBoard(id, title, description);
   }
 
-  getBoardById(id: number) {
+  getBoardById(id: number, user: User) {
     return this.boardRepository.getBoardById(id);
   }
 
-  async getAllBoards(): Promise<Board[]> {
-    return this.boardRepository.find();
+  async getAllBoards(): Promise<any[]> {
+    let test: any[] = await this.boardRepository.find({
+      relations: ['user'],
+    });
+    let noPassword = test.map((board) => {
+      return {
+        id: board.id,
+        title: board.title,
+        description: board.description,
+        createdAt: board.createdAt,
+        updatedAt: board.updatedAt,
+        status: board.status,
+        user: board.user.id,
+      };
+    });
+
+    console.log('nono', noPassword);
+    console.log('test', test);
+
+    return noPassword;
   }
 }

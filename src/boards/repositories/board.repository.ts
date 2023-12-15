@@ -71,6 +71,8 @@ export class BoardRepository extends Repository<Board> {
   async getBoardById(id: number): Promise<Board> {
     try {
       const found = await this.findOne({ relations: ['user'], where: { id } });
+      console.log(found);
+
       return found;
     } catch (error) {
       throw new BadRequestException('글을 찾을 수 없습니다.');
