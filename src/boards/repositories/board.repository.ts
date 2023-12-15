@@ -56,6 +56,7 @@ export class BoardRepository extends Repository<Board> {
     id: number,
     title: string,
     description: string,
+    user: User,
   ): Promise<Board> {
     try {
       const board = await this.update({ id }, { title, description });

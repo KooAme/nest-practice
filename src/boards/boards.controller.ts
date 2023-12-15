@@ -58,8 +58,9 @@ export class BoardsController {
     @Param('id') id: number,
     @Body('title') title: string,
     @Body('description') description: string,
+    @GetUser() user: User,
   ) {
-    return this.boardsService.updateBoard(id, title, description);
+    return this.boardsService.updateBoard(id, title, description, user);
   }
 
   @Post('/upload')

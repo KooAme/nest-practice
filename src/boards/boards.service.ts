@@ -20,8 +20,13 @@ export class BoardsService {
     return this.boardRepository.deleteBoard(id, user);
   }
 
-  updateBoard(id: number, title: string, description: string): Promise<Board> {
-    return this.boardRepository.updateBoard(id, title, description);
+  updateBoard(
+    id: number,
+    title: string,
+    description: string,
+    user: User,
+  ): Promise<Board> {
+    return this.boardRepository.updateBoard(id, title, description, user);
   }
 
   getBoardById(id: number, user: User) {
