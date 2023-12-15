@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './entities/board.entity';
 import { CreateBoardDto } from './dtos/create-board.dto';
 import { User } from 'src/user/entities/user.entity';
+import { userInfo } from 'os';
 
 @Injectable()
 export class BoardsService {
@@ -29,8 +30,23 @@ export class BoardsService {
     return this.boardRepository.updateBoard(id, title, description, user);
   }
 
-  getBoardById(id: number, user: User) {
-    return this.boardRepository.getBoardById(id);
+  async getBoardById(id: number, user: User) {
+    let noCurrentUser: any = await this.boardRepository.getBoardById(id);
+    // noCurrentUser.currentUserEmail = user.email;
+    // noCurrentUser.currentUserId = user.id;
+    // const withCurrentUser = {
+    //   id: noCurrentUser.id,
+    //   title: noCurrentUser.title,
+    //   currendUserEmail: user.email,
+    //   currentUserId: user.id,
+    // };
+
+    let withCurrentUser = {
+      ...noCurrentUser,
+      currentUserId: user.id,
+      currentUserEmail: user.email,
+    };
+    return withCurrentUser;
   }
 
   async getAllBoards(): Promise<any[]> {
