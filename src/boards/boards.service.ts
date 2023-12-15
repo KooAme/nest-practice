@@ -40,7 +40,8 @@ export class BoardsService {
         createdAt: board.createdAt,
         updatedAt: board.updatedAt,
         status: board.status,
-        user: board.user.id,
+        userEmail: board.user.email,
+        userId: board.user.id,
       };
     });
 
