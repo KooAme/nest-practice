@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { BoardsController } from './boards.controller';
 import { BoardsService } from './boards.service';
+
 import { BoardRepository } from './repositories/board.repository';
 
 @Module({

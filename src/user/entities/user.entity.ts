@@ -1,5 +1,6 @@
 import { IsEmail } from 'class-validator';
 import { Board } from 'src/boards/entities/board.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 import {
   BaseEntity,
   Column,
@@ -23,4 +24,7 @@ export class User extends BaseEntity {
 
   @OneToMany((type) => Board, (board) => board.user, { eager: true })
   boards: Board[];
+
+  // @OneToMany(() => Comment, (comment) => comment.user)
+  // comments: Comment[];
 }

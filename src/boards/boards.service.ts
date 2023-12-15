@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BoardStatus } from './boards-status.enum';
 import { BoardRepository } from './repositories/board.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './entities/board.entity';
@@ -24,10 +23,6 @@ export class BoardsService {
   updateBoard(id: number, title: string, description: string): Promise<Board> {
     return this.boardRepository.updateBoard(id, title, description);
   }
-
-  // updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
-  //   return this.boardRepository.updateBoardStatus(id, status);
-  // }
 
   getBoardById(id: number) {
     return this.boardRepository.getBoardById(id);

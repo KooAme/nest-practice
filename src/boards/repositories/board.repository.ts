@@ -68,19 +68,6 @@ export class BoardRepository extends Repository<Board> {
     }
   }
 
-  // async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
-  //   try {
-  //     const board = await this.getBoardById(id);
-
-  //     board.status = status;
-  //     await this.save(board);
-
-  //     return board;
-  //   } catch (error) {
-  //     throw new BadRequestException('게시글을 업데이트 하지 못했습니다.');
-  //   }
-  // }
-
   async getBoardById(id: number): Promise<Board> {
     try {
       const found = await this.findOne({ relations: ['user'], where: { id } });

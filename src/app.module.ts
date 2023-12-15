@@ -10,6 +10,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+// import { CommentsController } from './comments/comments.controller';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
     }),
     AuthModule,
     UserModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService, UserService],
