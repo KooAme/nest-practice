@@ -3,28 +3,39 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
-  ParseIntPipe,
   Post,
   Put,
+  Req,
+  Res,
+  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Request, Response } from 'express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 import { GetUser } from 'src/auth/decorator/get-user.decorator';
+import { multerDiskOptions } from 'src/configs/multer.config';
 import { User } from 'src/user/entities/user.entity';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dtos/create-board.dto';
 import { Board } from './entities/board.entity';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { BoardRepository } from './repositories/board.repository';
 
 @Controller('boards')
 @UseGuards(AuthGuard('jwt'))
 export class BoardsController {
-  constructor(private boardsService: BoardsService) {}
+  constructor(
+    private boardsService: BoardsService,
+    private boardRepository: BoardRepository,
+  ) {}
 
   @Get()
   getAllBoard(@GetUser() user: User): Promise<Board[]> {
@@ -42,9 +53,6 @@ export class BoardsController {
 
   @Delete('/:id')
   deleteBoard(@Param('id') id: number, @GetUser() user: User): Promise<void> {
-    console.log('컨트롤러 아이디', id);
-    console.log('컨트롤러', user);
-
     return this.boardsService.deleteBoard(id, user);
   }
 
@@ -63,18 +71,22 @@ export class BoardsController {
     return this.boardsService.updateBoard(id, title, description, user);
   }
 
-  @Post('/upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          cb(null, `${file.originalname}`);
-        },
-      }),
-    }),
-  )
-  async uploadFile() {
-    return 'success';
+  @Post('/upload/:id')
+  @UseInterceptors(FileInterceptor('file', multerDiskOptions))
+  async fileUpload(
+    @UploadedFile('file') file: Express.Multer.File,
+    @Param('id') id: number,
+  ) {
+    console.log('1111112312312312312312', file, id);
+    await this.boardRepository.update({ id }, { filename: file.filename });
+    return { message: 'Success' };
+  }
+
+  @Get('/images/:id')
+  async getFileUpload(@Param('id') id: number, @Res() res: Response) {
+    const board: any = await this.boardRepository.findOne({ where: { id } });
+    res.sendFile(
+      `/Users/koo/데스크탑 - koo’s MacBook Pro/nest/nest-homework/uploads/${board.filename}`,
+    );
   }
 }

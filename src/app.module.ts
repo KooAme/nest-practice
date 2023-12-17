@@ -10,11 +10,12 @@ import { AuthModule } from './auth/auth.module';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
-// import { CommentsController } from './comments/comments.controller';
 import { CommentsModule } from './comments/comments.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
+    MulterModule.register({ dest: './uploads' }),
     BoardsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({

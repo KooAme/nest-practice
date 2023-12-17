@@ -10,7 +10,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { BoardStatus } from '../boards-status.enum';
-import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity()
 export class Board extends BaseEntity {
@@ -31,6 +30,9 @@ export class Board extends BaseEntity {
 
   @Column()
   status: BoardStatus;
+
+  @Column({ nullable: true })
+  filename: string;
 
   @ManyToOne((type) => User, (user) => user.boards, { eager: false })
   user: User;

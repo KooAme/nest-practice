@@ -4,7 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './entities/board.entity';
 import { CreateBoardDto } from './dtos/create-board.dto';
 import { User } from 'src/user/entities/user.entity';
-import { userInfo } from 'os';
+import path from 'path';
+import * as fs from 'fs';
+import { diskStorage } from 'multer';
 
 @Injectable()
 export class BoardsService {
@@ -32,14 +34,6 @@ export class BoardsService {
 
   async getBoardById(id: number, user: User) {
     let noCurrentUser: any = await this.boardRepository.getBoardById(id);
-    // noCurrentUser.currentUserEmail = user.email;
-    // noCurrentUser.currentUserId = user.id;
-    // const withCurrentUser = {
-    //   id: noCurrentUser.id,
-    //   title: noCurrentUser.title,
-    //   currendUserEmail: user.email,
-    //   currentUserId: user.id,
-    // };
 
     let withCurrentUser = {
       ...noCurrentUser,
@@ -66,9 +60,19 @@ export class BoardsService {
       };
     });
 
-    console.log('nono', noPassword);
-    console.log('test', test);
+    // console.log('nono', noPassword);
+    // console.log('test', test);
 
     return noPassword;
   }
+
+  // async uploadFile(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
+  //   const upload = this.boardRepository.create({
+  //     // ...createBoardDto,
+  //     user: user,
+  //   });
+  //   console.log('123123123', createBoardDto);
+
+  //   return await this.boardRepository.save(upload);
+  // }
 }

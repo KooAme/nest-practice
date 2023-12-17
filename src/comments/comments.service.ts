@@ -68,7 +68,6 @@ export class CommentsService {
     try {
       const comment = await this.commentRepository.find({
         where: { boardId },
-
         order: { createdAt: 'DESC' },
       });
       return comment;
